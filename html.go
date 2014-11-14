@@ -44,23 +44,24 @@ pre code:before, pre code:after {
 li {
   line-height: 1.6;
 }
+#notify {
+  color: #f00;
+}
 </style>
 <script type="text/javascript">
 function longpoll() {
   var req = new XMLHttpRequest();
   req.open('GET', document.URL, true);
-
   req.onreadystatechange = function() {
     if (req.readyState == 4) {
       if (req.status == 200) {
         replace(req.responseText);
         longpoll();
       } else {
-        alert('long-poll connection lost');
+        document.getElementById('notify').innerHTML = 'not connected';
       }
     }
   };
-
   req.send(null);
 }
 function replace(content) {
@@ -71,6 +72,7 @@ function replace(content) {
 <body onload="longpoll()">
 <div align="center">
 <div class="main">
+<div id="notify"></div>
 `
 
 	footer = `
