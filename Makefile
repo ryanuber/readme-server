@@ -9,7 +9,8 @@ deps:
 build:
 	@echo Building...
 	@go build \
-		-v -o $(GOPATH)/bin/readme
+		-v -o $(GOPATH)/bin/go-readme
+	@cp scripts/readme.sh $(GOPATH)/bin/readme
 
 test:
 	@echo Running tests...
