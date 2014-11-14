@@ -46,15 +46,15 @@ li {
 }
 </style>
 <script type="text/javascript">
-function longpoll(url, callback) {
+function longpoll() {
   var req = new XMLHttpRequest();
-  req.open('GET', url, true);
+  req.open('GET', document.URL, true);
 
   req.onreadystatechange = function() {
     if (req.readyState == 4) {
       if (req.status == 200) {
-        callback(req.responseText);
-        longpoll(url, callback);
+        replace(req.responseText);
+        longpoll();
       } else {
         alert('long-poll connection lost');
       }
@@ -63,8 +63,12 @@ function longpoll(url, callback) {
 
   req.send(null);
 }
+function replace(content) {
+  document.write(content);
+  document.close();
+}
 </script>
-<body onload="longpoll('localhost', function(text){alert(text)})">
+<body onload="longpoll()">
 <div align="center">
 <div class="main">
 `
