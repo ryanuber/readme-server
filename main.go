@@ -16,8 +16,6 @@ import (
 	"gopkg.in/fsnotify.v1"
 )
 
-const filePath = "README.md"
-
 func main() {
 	var port int
 
@@ -57,6 +55,12 @@ func run(port int) int {
 		return 1
 	}
 	defer watcher.Close()
+
+	filePath, err := findReadme()
+	if err != nil {
+		log.Printf("%s", err)
+		return 1
+	}
 
 	if err := sendChanges(filePath, changeCh); err != nil {
 		log.Printf("%s", err)
@@ -107,6 +111,21 @@ func sendChanges(path string, changeCh chan<- string) error {
 
 	changeCh <- html
 	return nil
+}
+
+func findReadme() (string, error) {
+	files, err := ioutil.ReadDir(".")
+	if err != nil {
+		return "", err
+	}
+
+	for _, file := range files {
+		if strings.HasPrefix(file.Name(), "README") {
+			return file.Name(), nil
+		}
+	}
+
+	return "", fmt.Errorf("No README files found")
 }
 
 func usage() {
