@@ -32,8 +32,6 @@ code:before, code:after {
 pre {
   padding: 16px;
   overflow: auto;
-  font-size: 85%;
-  line-height: 1.45;
   border-radius: 3px;
   margin-bottom: 16px;
   background-color: #eee;
