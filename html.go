@@ -23,6 +23,7 @@ code {
   border-radius: 3px;
   background-color: #eee;
   font: 12px Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 100%;
 }
 code:before, code:after {
   letter-spacing: -0.2em;
@@ -44,7 +45,26 @@ li {
   line-height: 1.6;
 }
 </style>
-<body>
+<script type="text/javascript">
+function longpoll(url, callback) {
+  var req = new XMLHttpRequest();
+  req.open('GET', url, true);
+
+  req.onreadystatechange = function() {
+    if (req.readyState == 4) {
+      if (req.status == 200) {
+        callback(req.responseText);
+        longpoll(url, callback);
+      } else {
+        alert('long-poll connection lost');
+      }
+    }
+  };
+
+  req.send(null);
+}
+</script>
+<body onload="longpoll('localhost', function(text){alert(text)})">
 <div align="center">
 <div class="main">
 `
