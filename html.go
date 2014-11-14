@@ -44,6 +44,10 @@ pre code:before, pre code:after {
 li {
   line-height: 1.6;
 }
+h1 {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+}
 #notify {
   color: #f00;
 }
