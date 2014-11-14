@@ -76,11 +76,12 @@ func run(port int) int {
 			switch {
 			case event.Op&fsnotify.Write == fsnotify.Write:
 			case event.Op&fsnotify.Create == fsnotify.Create:
-			case event.Op&fsnotify.Chmod == fsnotify.Chmod:
+			case event.Op&fsnotify.Rename == fsnotify.Rename:
 			default:
 				continue
 			}
 
+			log.Printf("Detected file change")
 			if err := sendChanges(filePath, changeCh); err != nil {
 				log.Printf("%s", err)
 				return 1
