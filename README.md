@@ -6,6 +6,8 @@ searches the current working directory for any file matching `README*`, and
 uses the first file it finds as the source. The view in your browser is
 dynamically updated as changes are saved to the file.
 
+![](demo.gif)
+
 # How it works
 
 * HTTP server serves up your parsed `README.md` file
