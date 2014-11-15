@@ -57,7 +57,9 @@ function longpoll() {
   req.onreadystatechange = function() {
     if (req.readyState == 4) {
       if (req.status == 200) {
-        replace(req.responseText);
+        document.open();
+        document.write(req.responseText);
+        document.close();
         longpoll();
       } else {
         document.getElementById('notify').innerHTML = 'not connected';
@@ -66,12 +68,9 @@ function longpoll() {
   };
   req.send(null);
 }
-function replace(content) {
-  document.write(content);
-  document.close();
-}
+document.onload = longpoll();
 </script>
-<body onload="longpoll()">
+<body>
 <div align="center">
 <div class="main">
 <div id="notify"></div>

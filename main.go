@@ -37,6 +37,9 @@ func run(port int) int {
 	changeCh := make(chan string)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		if req.URL.String() != "/" {
+			return
+		}
 		io.WriteString(w, <-changeCh)
 	})
 
