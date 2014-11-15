@@ -17,6 +17,7 @@ import (
 )
 
 func main() {
+	var dontOpen bool
 	var port int
 
 	flags := flag.NewFlagSet("packer-build-manager", flag.ContinueOnError)
@@ -24,16 +25,17 @@ func main() {
 	flags.Usage = usage
 
 	flags.IntVar(&port, "port", 5678, "port number")
+	flags.BoolVar(&dontOpen, "dont-open", false, "dont open")
 
 	if err := flags.Parse(os.Args[1:]); err != nil {
 		log.Printf("%s", err)
 		return
 	}
 
-	os.Exit(run(port))
+	os.Exit(run(port, dontOpen))
 }
 
-func run(port int) int {
+func run(port int, dontOpen bool) int {
 	changeCh := make(chan string)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
@@ -46,10 +48,12 @@ func run(port int) int {
 	s := &http.Server{Addr: fmt.Sprintf(":%d", port)}
 	go s.ListenAndServe()
 
-	url := fmt.Sprintf("http://localhost:%d", port)
-	if err := exec.Command("open", url).Run(); err != nil {
-		log.Printf("%s", err)
-		return 1
+	if !dontOpen {
+		url := fmt.Sprintf("http://localhost:%d", port)
+		if err := exec.Command("open", url).Run(); err != nil {
+			log.Printf("%s", err)
+			return 1
+		}
 	}
 
 	watcher, err := fsnotify.NewWatcher()
@@ -139,6 +143,8 @@ Starts an HTTP server to display live updates to your README file
 
 Options:
   -port=<number>  The port number to start the server on.
+  -dont-open      Do not automatically open the page in a browser
 `
-	os.Stdout.WriteString(strings.TrimSpace(helpText))
+	os.Stderr.WriteString(strings.TrimSpace(helpText) + "\n")
+	os.Exit(1)
 }

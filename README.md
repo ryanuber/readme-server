@@ -11,7 +11,7 @@ dynamically updated as changes are saved to the file.
 * HTTP server serves up your parsed `README.md` file
 * Filesystem watches provide fast updates whenever your README changes
 * Long-polling makes your changes visible almost instantly in the browser
-* `open` command allows launching a browser window
+* `open` command on most systems allows launching a browser window
 
 # Installing
 
@@ -24,7 +24,8 @@ go build github.com/ryanuber/readme-server
 
 # Usage
 
-There is only a single command to start the server:
+There is only a single command to start the server. Against all odds, its name
+is `readme`:
 
 ```
 usage: readme [options]
@@ -33,6 +34,7 @@ Starts an HTTP server to display live updates to your README file
 
 Options:
   -port=<number>  The port number to start the server on.
+  -dont-open      Do not automatically open the page in a browser
 ```
 
 You can stop the server using `ctrl+c`.
