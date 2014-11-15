@@ -19,7 +19,7 @@ Assuming you have Golang all set up:
 
 ```
 go get github.com/ryanuber/readme-server
-go build github.com/ryanuber/readme-server
+go build -o ./readme github.com/ryanuber/readme-server
 ```
 
 # Usage
