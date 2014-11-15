@@ -140,5 +140,5 @@ Starts an HTTP server to display live updates to your README file
 Options:
   -port=<number>  The port number to start the server on.
 `
-	log.Printf(strings.TrimSpace(helpText))
+	os.Stdout.WriteString(strings.TrimSpace(helpText))
 }
