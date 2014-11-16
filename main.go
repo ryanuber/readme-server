@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -37,16 +38,7 @@ func main() {
 
 func run(port int, dontOpen bool) int {
 	changeCh := make(chan string)
-
-	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		if req.URL.String() != "/" {
-			return
-		}
-		io.WriteString(w, <-changeCh)
-	})
-
-	s := &http.Server{Addr: fmt.Sprintf(":%d", port)}
-	go s.ListenAndServe()
+	go serve(port, changeCh)
 
 	if !dontOpen {
 		url := fmt.Sprintf("http://localhost:%d", port)
@@ -55,13 +47,6 @@ func run(port int, dontOpen bool) int {
 			return 1
 		}
 	}
-
-	watcher, err := fsnotify.NewWatcher()
-	if err != nil {
-		log.Printf("%s", err)
-		return 1
-	}
-	defer watcher.Close()
 
 	filePath, err := findReadme()
 	if err != nil {
@@ -73,6 +58,13 @@ func run(port int, dontOpen bool) int {
 		log.Printf("%s", err)
 		return 1
 	}
+
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		log.Printf("%s", err)
+		return 1
+	}
+	defer watcher.Close()
 
 	for {
 		if err := watcher.Add(filePath); err != nil {
@@ -104,6 +96,27 @@ func run(port int, dontOpen bool) int {
 	}
 
 	return 0
+}
+
+func serve(port int, changeCh <-chan string) {
+	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+		if req.URL.String() != "/" {
+			path := filepath.Join(".", req.URL.String())
+			if _, err := os.Stat(path); err == nil {
+				content, err := ioutil.ReadFile(path)
+				if err != nil {
+					log.Printf("%s", err)
+				} else {
+					io.WriteString(w, string(content))
+				}
+			}
+			return
+		}
+		io.WriteString(w, <-changeCh)
+	})
+
+	s := &http.Server{Addr: fmt.Sprintf(":%d", port)}
+	s.ListenAndServe()
 }
 
 func sendChanges(path string, changeCh chan<- string) error {
