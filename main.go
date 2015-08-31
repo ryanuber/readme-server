@@ -125,7 +125,9 @@ func serve(port int, changeCh <-chan string) {
 	})
 
 	s := &http.Server{Addr: fmt.Sprintf(":%d", port)}
-	s.ListenAndServe()
+	if err := s.ListenAndServe(); err != nil {
+		panic(fmt.Sprintf("error serving: %s", err))
+	}
 }
 
 func sendChanges(path string, changeCh chan<- string) error {
