@@ -21,7 +21,7 @@ func main() {
 	var dontOpen bool
 	var port int
 
-	flags := flag.NewFlagSet("packer-build-manager", flag.ContinueOnError)
+	flags := flag.NewFlagSet("readme", flag.ContinueOnError)
 	flags.SetOutput(os.Stdout)
 	flags.Usage = usage
 
@@ -33,10 +33,16 @@ func main() {
 		return
 	}
 
-	os.Exit(run(port, dontOpen))
+	// Check if we were provided the markdown path
+	file := ""
+	if args := flags.Args(); len(args) > 0 {
+		file = args[0]
+	}
+
+	os.Exit(run(port, dontOpen, file))
 }
 
-func run(port int, dontOpen bool) int {
+func run(port int, dontOpen bool, filePath string) int {
 	changeCh := make(chan string)
 	go serve(port, changeCh)
 
@@ -48,10 +54,13 @@ func run(port int, dontOpen bool) int {
 		}
 	}
 
-	filePath, err := findReadme()
-	if err != nil {
-		log.Printf("%s", err)
-		return 1
+	if filePath == "" {
+		var err error
+		filePath, err = findReadme()
+		if err != nil {
+			log.Printf("%s", err)
+			return 1
+		}
 	}
 
 	if err := sendChanges(filePath, changeCh); err != nil {
@@ -150,9 +159,12 @@ func findReadme() (string, error) {
 
 func usage() {
 	helpText := `
-usage: readme [options]
+usage: readme [options] [file]
 
-Starts an HTTP server to display live updates to your README file
+Starts an HTTP server to display live updates to your README file.
+By default, the current working directory is searched for a file
+with the prefix 'README'. The file can be specified explicilty by
+passing an additional argument with the path to the desired file.
 
 Options:
   -port=<number>  The port number to start the server on.

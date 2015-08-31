@@ -32,7 +32,10 @@ is `readme`:
 ```
 usage: readme [options]
 
-Starts an HTTP server to display live updates to your README file
+Starts an HTTP server to display live updates to your README file.
+By default, the current working directory is searched for a file
+with the prefix 'README'. The file can be specified explicilty by
+passing an additional argument with the path to the desired file.
 
 Options:
   -port=<number>  The port number to start the server on.
@@ -44,5 +47,5 @@ You can stop the server using `ctrl+c`.
 # Limitations
 
 This project is geared toward README generation only. It currently only supports
-rendering your README file, so if there are links to other markdown files from
-it, they will not be functional.
+rendering a single file, so if there are links to other markdown files, they
+will not be functional.
