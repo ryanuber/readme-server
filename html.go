@@ -37,7 +37,7 @@ pre code:before, pre code:after {
   content: normal;
 }
 li {
-  line-height: 1.6;
+  padding-bottom: 10px;
 }
 h1 {
   width: 100%;
