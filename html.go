@@ -12,9 +12,6 @@ var (
   text-align: left;
   width: 790px;
   display: block;
-  border: 1px solid #ddd;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
   padding: 20px;
 }
 code {
