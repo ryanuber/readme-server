@@ -48,7 +48,7 @@ func run(port int, dontOpen bool, filePath string) int {
 
 	if !dontOpen {
 		url := fmt.Sprintf("http://localhost:%d", port)
-		if err := exec.Command("open", url).Run(); err != nil {
+		if err := exec.Command(openCmd, url).Run(); err != nil {
 			log.Printf("%s", err)
 			return 1
 		}
